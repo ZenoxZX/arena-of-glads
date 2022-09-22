@@ -1,2 +1,2 @@
-# arena-of-glads
+Arena of Glads
 Cross platform (Mobile - PC) casual game.
