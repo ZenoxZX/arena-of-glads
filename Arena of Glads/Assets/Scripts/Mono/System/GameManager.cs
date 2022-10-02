@@ -11,11 +11,20 @@ public class GameManager : MonoBehaviour
     #region Game State
     [SerializeField] GameState gameState;
     public GameState GetGameState() => gameState;
-    public GameState SetGameState(GameState gameState) => this.gameState = gameState;
-    public enum GameState { Starting, Playing, Paused, ConnectionError }
+    public GameState SetGameState(GameState gameState)
+    {
+        switch (gameState)
+        {
+            case GameState.Starting: OnGameStart?.Invoke(); break;
+            case GameState.Paused:   OnGamePause?.Invoke(); break;
+        }
+        return this.gameState = gameState;
+    }
+
+    public enum GameState { Starting, Playing, Paused }
     #endregion
 
-    public event Action OnGameStart, OnGamePause, OnGameResume, OnConnectionError, OnQuit;
+    public event Action OnGameStart, OnGamePause, OnGameResume, OnQuit;
 
     private void Awake()
     {
@@ -30,4 +39,7 @@ public class GameManager : MonoBehaviour
     {
         SceneChanger.instance.LoadGameSceneAsync();
     }
+
+    private void OnApplicationPause(bool pause) => OnGamePause?.Invoke();
+    private void OnApplicationQuit() => OnQuit?.Invoke();
 }
