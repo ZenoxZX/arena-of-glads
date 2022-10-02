@@ -1,12 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 
 public static class HelpersStatic
 {
-    private static System.Random rng = new System.Random();
+    #region Shuffle Generic List
 
+    private static System.Random rng = new System.Random();
     public static void Shuffle<T>(this IList<T> list)
     {
         int n = list.Count;
@@ -19,6 +19,10 @@ public static class HelpersStatic
             list[n] = value;
         }
     }
+
+    #endregion
+
+    #region Get Random Index By Percentages
 
     public static int GetRandomIndexByPercentages(params float[] percentages)
     {
@@ -41,4 +45,38 @@ public static class HelpersStatic
 
         return 0;
     }
+
+    #endregion
+
+    #region IsOverUI
+
+    private static PointerEventData _eventDataCurrentPosition;
+    private static List<RaycastResult> _results;
+
+    public static bool IsOverUI
+    {
+        get
+        {
+            _eventDataCurrentPosition = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
+            _results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(_eventDataCurrentPosition, _results);
+            return _results.Count > 0;
+        }
+    }
+
+    #endregion
+
+    #region Non-Alloc WaitForSeconds
+
+    private static readonly Dictionary<float, WaitForSeconds> WaitDictionary = new Dictionary<float, WaitForSeconds>();
+
+    public static WaitForSeconds GetWaitForSeconds(float time)
+    {
+        if (WaitDictionary.TryGetValue(time, out WaitForSeconds value)) return value;
+
+        WaitDictionary[time] = new WaitForSeconds(time);
+        return WaitDictionary[time];
+    }
+
+    #endregion
 }
