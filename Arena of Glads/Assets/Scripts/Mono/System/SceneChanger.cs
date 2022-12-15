@@ -11,7 +11,7 @@ public class SceneChanger : MonoBehaviour
     public const int LobyScene = 0;
     public const int GameScene = 1;
 
-    public static event Action OnGameSceneLoaded, OnLobySceneLoaded;
+    public static event Action OnSceneChanged, OnGameSceneLoaded, OnLobySceneLoaded;
 
     private void Awake()
     {
@@ -42,6 +42,7 @@ public class SceneChanger : MonoBehaviour
                 yield return null;
             }
 
+            OnSceneChanged?.Invoke();
             onLoad?.Invoke();
             UIHandler.instance.SetTitlePanel(false, this, 0.5f);
             yield return null;
